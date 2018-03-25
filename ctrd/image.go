@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"net/http"
+	"os"
 	"sync"
 	"time"
 
@@ -211,8 +212,10 @@ func (c *Client) PullImage(ctx context.Context, ref string, authConfig *types.Au
 
 		if refDigest, ok := refNamed.(reference.Digested); ok {
 			imageInfo.RepoDigests = append(imageInfo.RepoDigests, refDigest.String())
+			fmt.Fprintln(os.Stdout, "refdigest: "+refDigest.String())
 		} else {
 			refTagged := reference.WithDefaultTagIfMissing(refNamed).(reference.Tagged)
+			fmt.Fprintln(os.Stdout, "refTag: "+refTagged.Name())
 			imageInfo.RepoTags = append(imageInfo.RepoTags, refTagged.String())
 			imageInfo.RepoDigests = append(imageInfo.RepoDigests, refTagged.Name()+"@"+img.Target().Digest.String())
 		}
